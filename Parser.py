@@ -3,9 +3,9 @@ import unittest
 
 class SymbolTable:
 
-    def __init__(self):
+    def __init__(self, startingValue=16):
         self.table = {}
-        self.nextValue = 16
+        self.nextValue = startingValue
 
     def AddVariable(self, name):
         if name in self.table:
@@ -15,7 +15,7 @@ class SymbolTable:
     def HasSymbol(self, name):
         return name in self.table
 
-    def AddLable(self, name, address):
+    def AddLabel(self, name, address):
         if name in self.table:
             raise Exception("Label already exists!")
         self.table[name] = address
@@ -40,12 +40,12 @@ class testSymbolTable(unittest.TestCase):
         self.table.AddVariable("var1")
         assert(self.table.HasSymbol("var1"))
         assert(self.table.GetSymbolValue("var1") == 16)
-        self.table.AddLable("loop1", 5)
+        self.table.AddLabel("loop1", 5)
         assert(self.table.HasSymbol("loop1"))
         assert(self.table.GetSymbolValue("loop1") == 5)
 
     def testRepeatedAdd(self):
-        self.table.AddVariable("var1");
+        self.table.AddVariable("var1")
         assert(self.table.HasSymbol("var1"))
         assert(self.table.GetSymbolValue("var1") == 16)
         self.assertRaises(Exception, self.table.AddVariable, "var1")
