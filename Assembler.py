@@ -13,6 +13,10 @@ def BoolsToBits(values):
     return result
 
 
+def IntToBits(value):
+    return "{0:b}".format(value)
+
+
 class AddressInstruction:
     def __init__(self, address):
         self.address = address
@@ -28,6 +32,11 @@ class AddressInstruction:
 
     def SetAddress(self, value):
         self.address = value
+
+    def ToBitString(self):
+        if self.IsSymbol():
+            raise Exception("Symbol wasn't replaced yet!")
+        return "0"+IntToBits(self.address)
 
 
 class DestinationBits:

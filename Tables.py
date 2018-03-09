@@ -1,5 +1,4 @@
 jump_table = {
-    "null" : "000",
     "JGT" : "001",
     "JEQ" : "010",
     "JGE" : "011",
@@ -10,7 +9,6 @@ jump_table = {
 }
 
 dest_table =  {
-    "null" : "000",
     "M" : "001",
     "D" : "010",
     "MD" : "011",
