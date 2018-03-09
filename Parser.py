@@ -1,50 +1,62 @@
+import unittest
+
 
 class SymbolTable:
 
     def __init__(self):
         self.table = {}
-        self.nextValue = 16;
+        self.nextValue = 16
 
     def AddVariable(self, name):
         if name in self.table:
-            raise Exception("Symbol already exists!");
-        self.table[name] = self.FindNewValue();
+            raise Exception("Symbol already exists!")
+        self.table[name] = self.FindNewValue()
 
     def HasSymbol(self, name):
         return name in self.table
 
     def AddLable(self, name, address):
         if name in self.table:
-            raise Exception("Label already exists!");
+            raise Exception("Label already exists!")
         self.table[name] = address
 
     def GetSymbolValue(self, name):
-        if not name in self.table:
-            raise Exception("Symbol not found!");
+        if name not in self.table:
+            raise Exception("Symbol not found!")
         return self.table[name]
 
     def FindNewValue(self):
-        result = self.nextValue;
-        self.nextValue += 1;
-        return result;
+        result = self.nextValue
+        self.nextValue += 1
+        return result
 
-import unittest
 
 class testSymbolTable(unittest.TestCase):
 
     def setUp(self):
-        self.table = SymbolTable();
+        self.table = SymbolTable()
 
     def testAdding(self):
-        self.table.AddVariable("var1");
-        assert(self.table.HasSymbol("var1"));
-        assert(self.table.GetSymbolValue("var1") == 16);
-        self.table.AddLable("loop1", 5);
-        assert(self.table.HasSymbol("loop1"));
-        assert(self.table.GetSymbolValue("loop1") == 5);
+        self.table.AddVariable("var1")
+        assert(self.table.HasSymbol("var1"))
+        assert(self.table.GetSymbolValue("var1") == 16)
+        self.table.AddLable("loop1", 5)
+        assert(self.table.HasSymbol("loop1"))
+        assert(self.table.GetSymbolValue("loop1") == 5)
 
     def testRepeatedAdd(self):
         self.table.AddVariable("var1");
-        assert(self.table.HasSymbol("var1"));
-        assert(self.table.GetSymbolValue("var1") == 16);
+        assert(self.table.HasSymbol("var1"))
+        assert(self.table.GetSymbolValue("var1") == 16)
         self.assertRaises(Exception, self.table.AddVariable, "var1")
+
+    def TestValueIncrement(self):
+        self.table.AddVariable("var1")
+        assert(self.table.HasSymbol("var1"))
+        assert(self.table.GetSymbolValue("var1") == 16)
+        self.table.AddVariable("var2")
+        assert(self.table.HasSymbol("var2"))
+        assert(self.table.GetSymbolValue("var2") == 17)
+        self.table.AddVariable("var3")
+        assert(self.table.HasSymbol("var3"))
+        assert(self.table.GetSymbolValue("var3") == 18)
