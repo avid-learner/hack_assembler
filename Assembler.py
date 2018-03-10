@@ -6,6 +6,11 @@ def BoolToBit(value):
     return str(int(value))
 
 
+def testBoolToBit():
+    assert(BoolToBit(True) == "1")
+    assert(BoolToBit(False) == "0")
+
+
 def BoolsToBits(values):
     result = ""
     for v in values:
@@ -13,8 +18,12 @@ def BoolsToBits(values):
     return result
 
 
+def testBoolsToBits():
+    assert(BoolsToBits((True, False, True)) == "101")
+
+
 def IntToBits(value):
-    return "{0:b}".format(value)
+    return "{0:015b}".format(value)
 
 
 class AddressInstruction:
@@ -37,6 +46,16 @@ class AddressInstruction:
         if self.IsSymbol():
             raise Exception("Symbol wasn't replaced yet!")
         return "0"+IntToBits(self.address)
+
+
+class TestAddressInstruction(unittest.TestCase):
+    def testToBits(self):
+        a = AddressInstruction(56)
+        assert(a.ToBitString() == "0000000000111000")
+
+    def testSymbolToBits(self):
+        a = AddressInstruction("variable")
+        self.assertRaises(Exception, a.ToBitString)
 
 
 class DestinationBits:
@@ -64,7 +83,15 @@ class DestinationBits:
         self.M = True
 
     def ToBitString(self):
-        return BoolsToBits((self.A, self.M, self.D))
+        return BoolsToBits((self.A, self.D, self.M))
+
+    def ToPlainStr(self):
+        if self.A:
+            return "A"
+        if self.D:
+            return "D"
+        if self.M:
+            return "M"
 
 
 class testDestBits(unittest.TestCase):
@@ -76,7 +103,7 @@ class testDestBits(unittest.TestCase):
         assert(bits.ToBitString() == "100")
         bits.AddM()
         assert(bits.HasM())
-        assert(bits.ToBitString() == "110")
+        assert(bits.ToBitString() == "101")
         bits.AddD()
         assert(bits.HasD())
         assert(bits.ToBitString() == "111")
@@ -96,6 +123,15 @@ class JumpBits:
 
     def AddJ3(self):
         self.J3 = True
+
+    def RemoveJ1(self):
+        self.J1 = False
+
+    def RemoveJ2(self):
+        self.J2 = False
+
+    def RemoveJ3(self):
+        self.J3 = False
 
     def ToBitString(self):
         return BoolsToBits((self.J1, self.J2, self.J3))
@@ -127,8 +163,19 @@ class ControlInstruction:
         self.destination = destination
         self.jumps = jumps
 
+    def ToBitString(self):
+        return "111"+self.instruction.ToBitString() + self.destination.ToBitString() + self.jumps.ToBitString()
+
 
 class testInstructionBits:
     def test(self):
         bits = InstructionBits("M+1")
-        assert(bits.ToBitString() == "110111")
+        assert(bits.ToBitString() == "1110111")
+        for instr in Tables.comp_table:
+            bits = InstructionBits(instr)
+            assert(bits.ToBitString() == Tables.comp_table[instr])
+
+
+class Label:
+    def __init__(self, name):
+        self.name = name
